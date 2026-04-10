@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
     final ThemeNotifier theme = context.watch<ThemeNotifier>();
 
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       routerConfig: router,
       title: 'Spotify',
       theme: lightTheme,
