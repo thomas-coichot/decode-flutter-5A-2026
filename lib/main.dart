@@ -1,16 +1,16 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'config/router.dart';
 import 'config/theme.dart';
+import 'notifiers/session_notifier.dart';
 import 'notifiers/theme_notifier.dart';
-import 'screens/home/home_page.dart';
-import 'screens/login_screen.dart';
 
 void main() {
   MultiProvider providers = MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => ThemeNotifier()),
+      ChangeNotifierProvider(create: (_) => SessionNotifier()),
     ],
     child: const MyApp(),
   );
@@ -25,12 +25,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeNotifier theme = context.watch<ThemeNotifier>();
 
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: router,
       title: 'Spotify',
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: theme.themeMode,
-      home: MyHomePage(title: 'OK', count: 0),
     );
   }
 }
