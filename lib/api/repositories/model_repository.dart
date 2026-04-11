@@ -1,23 +1,25 @@
 import '../../services/api_service.dart';
+import '../models/paginated_response.dart';
 
-class ModelRepository {
+class ModelRepository<T> {
   final String uri;
-  final Function fromJson;
+  final T Function(Map<String, dynamic>) fromJson;
 
   const ModelRepository({required this.uri, required this.fromJson});
 
-  Future getAll({Map<String, String>? query}) async {
+  Future<PaginatedResponse<T>> getAll({Map<String, String>? queryParams}) async {
     return ApiService().request(
       uri: uri,
       httpMethod: HttpMethod.get,
-      queryParams: query,
-      parser: (res) {
-        return res['results'].map((e) => fromJson(e)).toList();
-      },
+      queryParams: queryParams,
+      parser: (res) => PaginatedResponse.fromJson(res, fromJson),
     );
   }
 
-  Future addOrUpdate({required Map<String, dynamic> data, String? id}) async {
+  Future<T> addOrUpdate({
+    required Map<String, dynamic> data,
+    String? id,
+  }) async {
     return ApiService().request(
       uri: uri,
       httpMethod: id != null ? HttpMethod.put : HttpMethod.post,
@@ -27,7 +29,7 @@ class ModelRepository {
     );
   }
 
-  Future delete(String id) {
+  Future<void> delete(String id) {
     return ApiService().request(
       uri: uri,
       httpMethod: HttpMethod.delete,
@@ -35,7 +37,7 @@ class ModelRepository {
     );
   }
 
-  Future get(String id) {
+  Future<T> get(String id) {
     return ApiService().request(
       uri: uri,
       id: id,

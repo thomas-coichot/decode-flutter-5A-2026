@@ -9,44 +9,61 @@ import '../helpers/exceptions.dart';
 enum HttpMethod { get, post, put, delete }
 
 class ApiService {
+  // Permet de créer un singleton
+  static final ApiService _instance = ApiService._internal();
+
+  factory ApiService() => _instance;
+
+  ApiService._internal();
+
   final client = http.Client();
   final baseUrl = 'https://swapi.dev/api';
 
-  Future request({
+  Future<T> request<T>({
     required String uri,
     HttpMethod httpMethod = .get,
     String? id,
     Map<String, dynamic>? data,
     Map<String, String>? queryParams,
-    Function? parser,
+    T Function(Map<String, dynamic>)? parser,
   }) async {
     Uri url = Uri.parse('$baseUrl/$uri');
+
+    if (id != null) {
+      url = Uri.parse('$baseUrl/$uri/$id');
+    }
 
     if (queryParams != null) {
       url = url.replace(queryParameters: queryParams);
     }
 
-    if (id != null) {
-      url = url.replace(path: '$url/$id');
-    }
-
     if (kDebugMode) {
       print('ApiService Request: ${httpMethod.toString().toUpperCase()} $url');
     }
-
-
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
     http.Response response;
 
     try {
       switch (httpMethod) {
         case HttpMethod.post:
-          response = await client.post(url, body: jsonEncode(data));
+          response = await client.post(
+            url,
+            body: jsonEncode(data),
+            headers: headers,
+          );
         case HttpMethod.put:
-          response = await client.put(url, body: jsonEncode(data));
+          response = await client.put(
+            url,
+            body: jsonEncode(data),
+            headers: headers,
+          );
         case HttpMethod.delete:
-          response = await client.delete(url);
+          response = await client.delete(url, headers: headers);
         default:
-          response = await client.get(url);
+          response = await client.get(url, headers: headers);
       }
 
       if (kDebugMode) {
@@ -57,7 +74,7 @@ class ApiService {
         case HttpStatus.created:
         case HttpStatus.ok:
           if (response.body.isEmpty) {
-            return null;
+            return null as T;
           }
 
           if (parser != null) {
@@ -66,19 +83,23 @@ class ApiService {
 
           return jsonDecode(response.body);
         case HttpStatus.unprocessableEntity:
-          return ApiFieldsException.fromJson(jsonDecode(response.body));
+          throw ApiFieldsException.fromJson(jsonDecode(response.body));
+        case HttpStatus.noContent:
+          return null as T;
         default:
           throw ApiException(
             httpStatus: response.statusCode,
             message: response.body,
           );
       }
+    } on ApiException {
+      rethrow;
+    } on ApiFieldsException {
+      rethrow;
     } on http.ClientException catch (e) {
-      print('HTTP Client Exception: $e');
-      throw Exception('Failed to make API request: $e');
+      throw ApiException(httpStatus: 0, message: 'Erreur réseau: $e');
     } catch (e) {
-      print('General Exception: $e');
-      throw Exception('An error occurred: $e');
+      throw ApiException(httpStatus: 0, message: 'Erreur inattendue: $e');
     }
   }
 }

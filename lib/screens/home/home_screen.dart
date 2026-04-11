@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../api/models/film.dart';
+import '../../api/models/film_model.dart';
 import '../../api/repositories/film_repository.dart';
 import '../../helpers/exceptions.dart';
 import '../../notifiers/theme_notifier.dart';
@@ -23,7 +23,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Film> _items = [];
+  List<FilmModel> _items = [];
   int _index = 0;
 
   @override
@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: _items.map((e) {
                     return Card(
                       child: Container(
-                        padding: .all(16),
+                        padding: const .all(16),
                         width: .infinity,
                         child: Column(
                           crossAxisAlignment: .start,
@@ -125,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Container(
                                 margin: const .only(top: 16),
                                 child: Text(
-                                  'Signle',
+                                  'Single',
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: colorScheme.outline,
@@ -197,10 +197,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _loadData() async {
     try {
-      final response = await FilmRepository().getAll();
+      final response = await const FilmRepository().getAll();
 
       setState(() {
-        _items = response.cast<Film>();
+        _items = response.rows.cast<FilmModel>();
       });
     } on ApiException catch (e) {
       debugPrint(e.toString());

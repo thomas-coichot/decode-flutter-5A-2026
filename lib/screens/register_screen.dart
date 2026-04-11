@@ -40,66 +40,68 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              spacing: 16,
-              children: [
-                Text('S\'inscrire'),
-                CustomTextField(
-                  controller: _emailController,
-                  label: 'Email',
-                ),
-                PasswordField(
-                  controller: _passwordController,
-                  label: 'Mot de passe',
-                ),
-                CustomTextField(
-                  controller: _lastnameController,
-                  label: 'Nom',
-                ),
-                CustomTextField(
-                  controller: _firstnameController,
-                  label: 'Prénom',
-                ),
-                Row(
-                  crossAxisAlignment: .center,
-                  spacing: 16,
-                  children: [
-                    Switch(
-                      value: _cgu,
-                      onChanged: (val) {
-                        setState(() {
-                          _cgu = val;
-                        });
-                      },
-                    ),
-                    Expanded(
-                      child: Text(
-                        'En cliquant sur ce bouton, vous acceptez les CGU',
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                spacing: 16,
+                children: [
+                  const Text('S\'inscrire'),
+                  CustomTextField(
+                    controller: _emailController,
+                    label: 'Email',
+                  ),
+                  PasswordField(
+                    controller: _passwordController,
+                    label: 'Mot de passe',
+                  ),
+                  CustomTextField(
+                    controller: _lastnameController,
+                    label: 'Nom',
+                  ),
+                  CustomTextField(
+                    controller: _firstnameController,
+                    label: 'Prénom',
+                  ),
+                  Row(
+                    crossAxisAlignment: .center,
+                    spacing: 16,
+                    children: [
+                      Switch(
+                        value: _cgu,
+                        onChanged: (val) {
+                          setState(() {
+                            _cgu = val;
+                          });
+                        },
                       ),
-                    ),
-                  ],
-                ),
-                Row(
-                  crossAxisAlignment: .center,
-                  mainAxisAlignment: .spaceBetween,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        context.pop();
-                      },
-                      child: Text('Retour'),
-                    ),
-                    ElevatedButton(
-                      onPressed: _onSubmit,
-                      child: Text('Submit'),
-                    ),
-                  ],
-                ),
-              ],
+                      const Expanded(
+                        child: Text(
+                          'En cliquant sur ce bouton, vous acceptez les CGU',
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    crossAxisAlignment: .center,
+                    mainAxisAlignment: .spaceBetween,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          context.pop();
+                        },
+                        child: Text('Retour'),
+                      ),
+                      ElevatedButton(
+                        onPressed: _onSubmit,
+                        child: Text('Submit'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

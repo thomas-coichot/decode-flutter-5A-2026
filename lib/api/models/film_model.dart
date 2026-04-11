@@ -1,4 +1,4 @@
-class Film {
+class FilmModel {
   final List<String> characters;
   final DateTime createdAt;
   final String director;
@@ -12,7 +12,7 @@ class Film {
   final List<String> starships;
   final String title;
 
-  const Film({
+  const FilmModel({
     required this.species,
     required this.starships, required this.title, required this.characters,
     required this.createdAt,
@@ -24,8 +24,8 @@ class Film {
     required this.releaseDate,
   });
 
-  factory Film.fromJson(Map<String, dynamic> json) {
-    return Film(
+  factory FilmModel.fromJson(Map<String, dynamic> json) {
+    return FilmModel(
       species: json['species'].cast<String>(),
       starships: json['starships'].cast<String>(),
       title: json['title'],
@@ -42,6 +42,6 @@ class Film {
 
   @override
   String toString() {
-    return 'Film(title: $title)';
+    return 'FilmModel(title: $title)';
   }
 }

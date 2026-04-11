@@ -21,14 +21,14 @@ class PasswordField extends StatefulWidget {
 }
 
 class _PasswordFieldState extends State<PasswordField> {
-  bool _showPassword = false;
+  bool _hidePassword = true;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return TextFormField(
-      obscureText: _showPassword,
+      obscureText: _hidePassword,
       decoration: InputDecoration(
         constraints: const BoxConstraints(),
         label: Text(widget.label),
@@ -40,7 +40,7 @@ class _PasswordFieldState extends State<PasswordField> {
           ),
           onPressed: () {
             setState(() {
-              _showPassword = !_showPassword;
+              _hidePassword = !_hidePassword;
             });
           },
           icon: Icon(
