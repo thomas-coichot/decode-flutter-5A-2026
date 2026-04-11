@@ -38,7 +38,7 @@ class ApiService {
     }
 
     if (kDebugMode) {
-      print('ApiService Request: ${httpMethod.toString().toUpperCase()} $url');
+      print('${httpMethod.name.toUpperCase()} : $url');
     }
     Map<String, String> headers = {
       'Content-Type': 'application/json',
