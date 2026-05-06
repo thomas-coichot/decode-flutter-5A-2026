@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 import '../api/models/user_model.dart';
+import '../api/repositories/auth_repository.dart';
+import '../api/repositories/user_repository.dart';
 import '../config/routes.dart';
-import '../helpers/validators.dart';
+import '../helpers/exceptions.dart';
 import '../notifiers/session_notifier.dart';
 import '../widgets/fields/password_field.dart';
 import '../widgets/fields/text_field.dart';
@@ -25,16 +26,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _firstnameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  bool _cgu = false;
+  ApiFieldsException? _exception;
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    _lastnameController.dispose();
-    _firstnameController.dispose();
-    super.dispose();
-  }
+  bool _cgu = false;
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +103,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  void _onSubmit() {
+  void _onSubmit() async {
+    final session = context.read<SessionNotifier>();
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -123,17 +119,55 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
     }
 
-    final session = context.read<SessionNotifier>();
+    try {
+      final UserModel newUser = await const UserRepository().addOrUpdate(
+        data: {
+          'email': _emailController.text,
+          'password': _passwordController.text,
+          'lastname': _lastnameController.text,
+          'firstname': _firstnameController.text,
+          'roles': [RoleUser.user.value],
+        },
+      );
 
-    session.onAuthentication(
-      UserModel(
-        email: _emailController.text,
-        firstname: _firstnameController.text,
-        lastname: _lastnameController.text,
-        role: RoleUser.user,
-      ),
-    );
+      if (!mounted) {
+        return;
+      }
 
-    context.go(rtAdmin);
+      final AuthResponse response = await AuthRepository().authenticate({
+        'email': newUser.email,
+        'password': _passwordController.text,
+      });
+
+      if (!mounted) {
+        return;
+      }
+
+      session.onAuthentication(response);
+
+      context.go(rtHome);
+    } on ApiFieldsException catch (e) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        _exception = e;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: .floating,
+          content: Text(e.toString()),
+        ),
+      );
+    } on ApiException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: .floating,
+          content: Text(e.message),
+        ),
+      );
+      return;
+    }
   }
 }

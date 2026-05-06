@@ -1,9 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../helpers/middlewares.dart';
+import '../notifiers/session_notifier.dart';
+import '../screens/account/account.dart';
 import '../screens/admin/admin_screen.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/login_screen.dart';
@@ -20,11 +22,13 @@ Page buildPage(BuildContext context, GoRouterState state, Widget child) {
 }
 
 final GoRouter router = GoRouter(
+  debugLogDiagnostics: true,
   errorPageBuilder: (context, state) => buildPage(
     context,
     state,
     const NotFoundScreen(),
   ),
+
   initialLocation: rtLogin,
   routes: [
     GoRoute(
@@ -55,11 +59,38 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: rtHome,
+      redirect: (context, state) {
+        final session = context.read<SessionNotifier>();
+
+        if(session.isAuthenticated){
+          return null;
+        }
+
+        return rtLogin;
+      },
       pageBuilder: (context, state) => buildPage(
         context,
         state,
         const HomeScreen(),
       ),
     ),
+    GoRoute(
+      path: rtAccount,
+      redirect: (context, state) {
+        final session = context.read<SessionNotifier>();
+
+        if(session.isAuthenticated){
+          return null;
+        }
+
+        return rtLogin;
+      },
+      pageBuilder: (context, state) => buildPage(
+        context,
+        state,
+        const AccountScreen(),
+      ),
+    ),
+
   ],
 );

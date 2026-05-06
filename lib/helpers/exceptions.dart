@@ -1,5 +1,3 @@
-import 'dart:io';
-
 class ApiException implements Exception {
   final int httpStatus;
   final String message;
@@ -22,13 +20,13 @@ class ApiField {
 
 class ApiFieldsException implements Exception {
   final int httpStatus;
-  final String message;
-  final List<ApiField> fields;
+  final String? message;
+  final Map fields;
 
   const ApiFieldsException({
     required this.httpStatus,
-    required this.message,
     required this.fields,
+    this.message,
   });
 
   factory ApiFieldsException.fromJson(Map<String, dynamic> json) {
@@ -41,5 +39,5 @@ class ApiFieldsException implements Exception {
 
   @override
   String toString() =>
-      'ApiFieldsException: $httpStatus - $message : ${fields.map((e) => e.toString()).join(',')}';
+      'ApiFieldsException: $httpStatus - $message : ${fields.entries.map((e) => e.value).join(',')}';
 }

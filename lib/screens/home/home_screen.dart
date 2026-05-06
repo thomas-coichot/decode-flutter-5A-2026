@@ -1,9 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../api/models/film_model.dart';
 import '../../api/repositories/film_repository.dart';
+import '../../config/routes.dart';
 import '../../helpers/exceptions.dart';
 import '../../notifiers/theme_notifier.dart';
 
@@ -48,8 +50,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                 child: Row(
                   children: [
-                    const CircleAvatar(
-                      child: Text('H'),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(50),
+                      onTap: () {
+                        context.push(rtAccount);
+                      },
+                      child: const CircleAvatar(
+                        child: Text('H'),
+                      ),
                     ),
                     Expanded(
                       child: SizedBox(
@@ -182,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _index = index;
           });
         },
-        destinations: <Widget>[
+        destinations: const <Widget>[
           NavigationDestination(icon: Icon(Icons.explore), label: 'Explore'),
           NavigationDestination(icon: Icon(Icons.commute), label: 'Commute'),
           NavigationDestination(

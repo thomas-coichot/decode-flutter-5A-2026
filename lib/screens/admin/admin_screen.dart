@@ -20,7 +20,7 @@ class AdminScreen extends StatelessWidget {
             }
             return context.go(rtLogin);
           },
-          child: Text('Retour'),
+          child: const Text('Retour'),
         ),
       ),
     );

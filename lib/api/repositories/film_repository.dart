@@ -2,7 +2,7 @@ import '../../services/api_service.dart';
 import '../models/film_model.dart';
 import 'model_repository.dart';
 
-class FilmRepository extends ModelRepository {
+class FilmRepository extends ModelRepository<FilmModel> {
   const FilmRepository()
     : super(
         uri: 'films',

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
+import '../api/repositories/auth_repository.dart';
 import '../config/routes.dart';
-import '../helpers/validators.dart';
+import '../helpers/exceptions.dart';
+import '../notifiers/session_notifier.dart';
 import '../widgets/fields/password_field.dart';
 import '../widgets/fields/text_field.dart';
 
@@ -19,8 +22,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  bool _cgu = false;
-
   @override
   void dispose() {
     _emailController.dispose();
@@ -30,29 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-
-    final inputDecoration = InputDecoration(
-      border: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: colorScheme.outlineVariant,
-        ),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: colorScheme.outlineVariant,
-        ),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: colorScheme.primary,
-          width: 1,
-        ),
-        borderRadius: BorderRadius.circular(16),
-      ),
-    );
 
     return Scaffold(
       body: SafeArea(
@@ -91,25 +69,38 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _onSubmit() {
+  void _onSubmit() async {
+    final session = context.read<SessionNotifier>();
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    if (!_cgu) {
+    try{
+      final AuthResponse response = await AuthRepository().authenticate({
+        'email': _emailController.text,
+        'password': _passwordController.text,
+      });
+
+      if (!mounted) {
+        return;
+      }
+
+      session.onAuthentication(response);
+
+      context.go(rtHome);
+    } on ApiException catch(e){
+      if (!mounted) {
+        return;
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           behavior: .floating,
-          content: Text('Vous devez accepter les CGU'),
+          content: Text(e.message),
         ),
       );
     }
 
-    // CALL HTTP VIA API D'AUTHENTIFIC
 
-    print(_emailController.text);
-    print(_passwordController.text);
-
-    context.go(rtAdmin);
   }
 }

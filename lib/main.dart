@@ -5,6 +5,7 @@ import 'config/router.dart';
 import 'config/theme.dart';
 import 'notifiers/session_notifier.dart';
 import 'notifiers/theme_notifier.dart';
+import 'screens/loading_screen.dart';
 
 void main() {
   MultiProvider providers = MultiProvider(
@@ -29,6 +30,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routerConfig: router,
       title: 'Spotify',
+      builder: (BuildContext ctx, Widget? child) {
+        return LoadingScreen(
+          child: child,
+        );
+      },
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: theme.themeMode,
