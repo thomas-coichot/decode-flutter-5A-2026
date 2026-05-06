@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -61,6 +63,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
         _isLoading = false;
       });
     } on ApiException catch (e) {
+      // On déconnecte l'utilisateur si le token est invalide ou expiré
+      session.logout();
       debugPrint(e.message);
     }
   }
