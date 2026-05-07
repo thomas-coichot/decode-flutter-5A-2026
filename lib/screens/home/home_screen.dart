@@ -8,14 +8,8 @@ import '../../api/repositories/film_repository.dart';
 import '../../config/routes.dart';
 import '../../helpers/exceptions.dart';
 import '../../notifiers/theme_notifier.dart';
-
-const List<String> menus = [
-  'Tout',
-  'Musique',
-  'Podcasts',
-  'Livres audios',
-  'Films',
-];
+import '../admin/admin_screen.dart';
+import 'home.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,13 +19,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<FilmModel> _items = [];
   int _index = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadData();
+  Widget _body(int index) {
+    switch (index) {
+      case 0:
+        return const Home();
+      case 1:
+        return const AdminScreen();
+      default:
+        throw UnimplementedError('Index $index not implemented');
+    }
   }
 
   @override
@@ -43,145 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
       key: const ValueKey('home_screen'),
       backgroundColor: colorScheme.surface,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            spacing: 16,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                child: Row(
-                  children: [
-                    InkWell(
-                      borderRadius: BorderRadius.circular(50),
-                      onTap: () {
-                        context.push(rtAccount);
-                      },
-                      child: const CircleAvatar(
-                        child: Text('H'),
-                      ),
-                    ),
-                    Expanded(
-                      child: SizedBox(
-                        height: 48,
-                        child: ListView(
-                          scrollDirection: .horizontal,
-                          children: menus
-                              .mapIndexed(
-                                (int index, e) => Padding(
-                                  padding: const EdgeInsets.only(left: 8),
-                                  child: FilterChip(
-                                    label: Text(e),
-                                    onSelected: (bool value) {},
-                                    selected: index == 0,
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: _changeTheme,
-                      icon: Icon(
-                        theme.themeMode == ThemeMode.dark
-                            ? Icons.light_mode
-                            : Icons.dark_mode,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  spacing: 4,
-                  children: _items.map((e) {
-                    return Card(
-                      child: Container(
-                        padding: const .all(16),
-                        width: .infinity,
-                        child: Column(
-                          crossAxisAlignment: .start,
-                          children: [
-                            Text(e.title),
-                            Text(e.director),
-                          ],
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-              Padding(
-                padding: const .symmetric(horizontal: 8),
-                child: Card(
-                  child: Row(
-                    spacing: 16,
-                    children: [
-                      Image.asset(
-                        'assets/image.jpeg',
-                        height: 128,
-                        width: 128,
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 16, bottom: 16),
-                          child: Column(
-                            crossAxisAlignment: .start,
-                            mainAxisAlignment: .start,
-                            mainAxisSize: .max,
-                            children: [
-                              Container(
-                                margin: const .only(top: 16),
-                                child: Text(
-                                  'Single',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: colorScheme.outline,
-                                  ),
-                                  maxLines: 2,
-                                ),
-                              ),
-                              const Text(
-                                'Johnny Mad Dog',
-                                maxLines: 2,
-                              ),
-                              const Text(
-                                'Mon texte.......',
-                                maxLines: 2,
-                              ),
-                              Container(
-                                margin: const .only(top: 8),
-                                child: const Text(
-                                  'Mon texte.......',
-                                  maxLines: 2,
-                                ),
-                              ),
-                              Row(
-                                crossAxisAlignment: .center,
-                                mainAxisAlignment: .spaceBetween,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.add_circle_outline),
-                                  ),
-                                  IconButton.filled(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.play_arrow_rounded),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        child: _body(_index),
       ),
       bottomNavigationBar: NavigationBar(
         labelBehavior: .onlyShowSelected,
@@ -193,34 +53,12 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         destinations: const <Widget>[
           NavigationDestination(icon: Icon(Icons.explore), label: 'Explore'),
-          NavigationDestination(icon: Icon(Icons.commute), label: 'Commute'),
           NavigationDestination(
-            selectedIcon: Icon(Icons.bookmark),
-            icon: Icon(Icons.bookmark_border),
-            label: 'Saved',
+            icon: Icon(Icons.admin_panel_settings),
+            label: 'Admin',
           ),
         ],
       ),
-    );
-  }
-
-  void _loadData() async {
-    try {
-      final response = await const FilmRepository().getAll();
-
-      setState(() {
-        _items = response.rows.cast<FilmModel>();
-      });
-    } on ApiException catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-
-  void _changeTheme() {
-    final theme = context.read<ThemeNotifier>();
-
-    theme.setThemeMode(
-      theme.themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark,
     );
   }
 }

@@ -15,6 +15,7 @@ final ThemeData lightTheme = ThemeData(
     scaffoldBackgroundColor: lightColorScheme.surface,
     cardTheme: const CardThemeData(
       clipBehavior: .hardEdge,
+      elevation: 0,
     ),
     chipTheme: ChipThemeData(
         backgroundColor: lightColorScheme.surfaceContainer,
@@ -29,6 +30,7 @@ final ThemeData darkTheme = ThemeData(
     scaffoldBackgroundColor: darkColorScheme.surface,
     cardTheme: const CardThemeData(
       clipBehavior: .hardEdge,
+      elevation: 0,
     ),
     chipTheme: ChipThemeData(
         backgroundColor: darkColorScheme.surfaceContainer,

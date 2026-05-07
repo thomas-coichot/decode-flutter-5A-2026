@@ -7,6 +7,7 @@ import '../helpers/middlewares.dart';
 import '../notifiers/session_notifier.dart';
 import '../screens/account/account.dart';
 import '../screens/admin/admin_screen.dart';
+import '../screens/admin/users_screen.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/not_found_screen.dart';
@@ -56,6 +57,16 @@ final GoRouter router = GoRouter(
         state,
         const AdminScreen(),
       ),
+      routes: [
+        GoRoute(
+          path: '/users',
+          pageBuilder: (context, state) => buildPage(
+            context,
+            state,
+            const AdminUsersScreen(),
+          ),
+        ),
+      ],
     ),
     GoRoute(
       path: rtHome,
@@ -71,7 +82,7 @@ final GoRouter router = GoRouter(
       redirect: (context, state) {
         final session = context.read<SessionNotifier>();
 
-        if(session.isAuthenticated){
+        if (session.isAuthenticated) {
           return null;
         }
 
@@ -83,6 +94,5 @@ final GoRouter router = GoRouter(
         const AccountScreen(),
       ),
     ),
-
   ],
 );

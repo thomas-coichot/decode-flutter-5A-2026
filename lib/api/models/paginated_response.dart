@@ -11,9 +11,10 @@ class PaginatedResponse<T> {
       Map<String, dynamic> json,
       T Function(Map<String, dynamic>) fromJson,
       ) {
+
     return PaginatedResponse(
       count: json['count'],
-      rows: json['results'].map<T>((e) => fromJson(e)).toList(),
+      rows: json['rows'].map<T>((e) => fromJson(e)).toList(),
     );
   }
 }

@@ -20,6 +20,7 @@ enum RoleUser {
 }
 
 class UserModel {
+  final String id;
   final String email;
   final String lastname;
   final String firstname;
@@ -27,6 +28,7 @@ class UserModel {
   final String? languageId;
 
   const UserModel({
+    required this.id,
     required this.email,
     required this.lastname,
     required this.firstname,
@@ -36,6 +38,7 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
+      id: json['id'],
       email: json['email'],
       lastname: json['lastname'],
       firstname: json['firstname'],
@@ -45,6 +48,7 @@ class UserModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'email': email,
       'lastname': lastname,
       'firstname': firstname,
@@ -52,4 +56,6 @@ class UserModel {
       'language_id': languageId,
     };
   }
+
+  String get fullName => '$firstname $lastname';
 }

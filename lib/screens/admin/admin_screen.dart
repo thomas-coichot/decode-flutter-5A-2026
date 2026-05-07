@@ -8,20 +8,27 @@ class AdminScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Admin'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            if (context.canPop()) {
-              return context.pop();
-            }
-            return context.go(rtLogin);
-          },
-          child: const Text('Retour'),
-        ),
+    return SingleChildScrollView(
+      padding: const .all(16),
+      child: Column(
+        spacing: 16,
+        children: [
+          const Text(
+            'Administration',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: .bold,
+            ),
+          ),
+          Card(
+            child: ListTile(
+              title: const Text('Users'),
+              onTap: () {
+                context.push(rtAdminUsers);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

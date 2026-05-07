@@ -46,6 +46,8 @@ class CustomTextField extends StatelessWidget {
         ),
       ),
       textInputAction: TextInputAction.done,
+      textCapitalization: .none,
+      autocorrect: false,
       validator: (String? value) {
         if (required) {
           if (value == null || value.isEmpty) {
