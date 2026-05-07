@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:toastification/toastification.dart';
 
 import 'config/router.dart';
 import 'config/theme.dart';
@@ -27,18 +28,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeNotifier theme = context.watch<ThemeNotifier>();
 
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      routerConfig: router,
-      title: 'Spotify',
-      builder: (BuildContext ctx, Widget? child) {
-        return LoadingScreen(
-          child: child,
-        );
-      },
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      themeMode: theme.themeMode,
+    return ToastificationWrapper(
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        routerConfig: router,
+        title: 'Spotify',
+        builder: (BuildContext ctx, Widget? child) {
+          return LoadingScreen(
+            child: child,
+          );
+        },
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: theme.themeMode,
+      ),
     );
   }
 }

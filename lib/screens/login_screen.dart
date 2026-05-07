@@ -6,6 +6,7 @@ import '../api/repositories/auth_repository.dart';
 import '../config/routes.dart';
 import '../helpers/exceptions.dart';
 import '../notifiers/session_notifier.dart';
+import '../services/toast_service.dart';
 import '../widgets/fields/password_field.dart';
 import '../widgets/fields/text_field.dart';
 import '../widgets/buttons/loading_button.dart';
@@ -43,7 +44,13 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               spacing: 16,
               children: [
-                const Text('Se connecter'),
+                const Text(
+                  'Se connecter',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 CustomTextField(
                   key: const ValueKey('email_field'),
                   controller: _emailController,
@@ -78,13 +85,13 @@ class _LoginScreenState extends State<LoginScreen> {
   void _onSubmit() async {
     final session = context.read<SessionNotifier>();
 
-    setState(() {
-      _isSubmitted = true;
-    });
-
     if (!_formKey.currentState!.validate()) {
       return;
     }
+
+    setState(() {
+      _isSubmitted = true;
+    });
 
     try {
       final AuthResponse response = await AuthRepository().authenticate({
@@ -110,12 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         _isSubmitted = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: .floating,
-          content: Text(e.message),
-        ),
-      );
+      ToastService.showToast(e.message);
     }
   }
 }

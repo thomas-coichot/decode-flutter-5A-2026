@@ -8,6 +8,8 @@ import '../api/repositories/user_repository.dart';
 import '../config/routes.dart';
 import '../helpers/exceptions.dart';
 import '../notifiers/session_notifier.dart';
+import '../services/toast_service.dart';
+import '../widgets/buttons/loading_button.dart';
 import '../widgets/fields/password_field.dart';
 import '../widgets/fields/text_field.dart';
 
@@ -28,7 +30,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   ApiFieldsException? _exception;
 
+  bool _isSubmitted = false;
   bool _cgu = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _firstnameController.dispose();
+    _lastnameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +54,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 spacing: 16,
                 children: [
-                  const Text('S\'inscrire'),
+                  const Text(
+                    'S\'inscrire',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   CustomTextField(
                     controller: _emailController,
                     label: 'Email',
@@ -86,11 +104,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onPressed: () {
                           context.pop();
                         },
-                        child: Text('Retour'),
+                        child: const Text('Retour'),
                       ),
-                      ElevatedButton(
+                      LoadingButton(
                         onPressed: _onSubmit,
-                        child: Text('Submit'),
+                        label: 'Submit',
+                        isLoading: _isSubmitted,
                       ),
                     ],
                   ),
@@ -118,6 +137,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       );
     }
+
+    setState(() {
+      _isSubmitted = true;
+    });
 
     try {
       final UserModel newUser = await const UserRepository().addOrUpdate(
@@ -153,20 +176,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       setState(() {
         _exception = e;
+        _isSubmitted = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: .floating,
-          content: Text(e.toString()),
-        ),
-      );
     } on ApiException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: .floating,
-          content: Text(e.message),
-        ),
-      );
+      ToastService.showToast(e.message);
+      setState(() {
+        _isSubmitted = false;
+      });
       return;
     }
   }
