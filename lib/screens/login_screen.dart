@@ -8,6 +8,7 @@ import '../helpers/exceptions.dart';
 import '../notifiers/session_notifier.dart';
 import '../widgets/fields/password_field.dart';
 import '../widgets/fields/text_field.dart';
+import '../widgets/buttons/loading_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,6 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  bool _isSubmitted = false;
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -31,7 +34,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -41,19 +43,23 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               spacing: 16,
               children: [
-                Text('Se connecter'),
+                const Text('Se connecter'),
                 CustomTextField(
+                  key: const ValueKey('email_field'),
                   controller: _emailController,
                   label: 'Email',
                   email: true,
                 ),
                 PasswordField(
+                  key: const ValueKey('password_field'),
                   controller: _passwordController,
                   label: 'Password',
                 ),
-                ElevatedButton(
+                LoadingButton(
+                  key: const ValueKey('login_button'),
                   onPressed: _onSubmit,
-                  child: Text('Submit'),
+                  label: 'Se connecter',
+                  isLoading: _isSubmitted,
                 ),
                 TextButton(
                   onPressed: () {
@@ -72,11 +78,15 @@ class _LoginScreenState extends State<LoginScreen> {
   void _onSubmit() async {
     final session = context.read<SessionNotifier>();
 
+    setState(() {
+      _isSubmitted = true;
+    });
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    try{
+    try {
       final AuthResponse response = await AuthRepository().authenticate({
         'email': _emailController.text,
         'password': _passwordController.text,
@@ -86,13 +96,20 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
+      setState(() {
+        _isSubmitted = false;
+      });
+
       session.onAuthentication(response);
 
       context.go(rtHome);
-    } on ApiException catch(e){
+    } on ApiException catch (e) {
       if (!mounted) {
         return;
       }
+      setState(() {
+        _isSubmitted = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: .floating,
@@ -100,7 +117,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     }
-
-
   }
 }

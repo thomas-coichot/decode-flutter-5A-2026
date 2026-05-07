@@ -8,6 +8,7 @@ import 'notifiers/theme_notifier.dart';
 import 'screens/loading_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   MultiProvider providers = MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => ThemeNotifier()),

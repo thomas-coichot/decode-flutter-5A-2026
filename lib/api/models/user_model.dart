@@ -24,12 +24,14 @@ class UserModel {
   final String lastname;
   final String firstname;
   final List<RoleUser> roles;
+  final String? languageId;
 
   const UserModel({
     required this.email,
     required this.lastname,
     required this.firstname,
     required this.roles,
+    this.languageId,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -39,5 +41,15 @@ class UserModel {
       firstname: json['firstname'],
       roles: json['roles'].map<RoleUser>((e) => RoleUser.fromValue(e)).toList(),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'lastname': lastname,
+      'firstname': firstname,
+      'roles': roles.map((e) => e.value).toList(),
+      'language_id': languageId,
+    };
   }
 }

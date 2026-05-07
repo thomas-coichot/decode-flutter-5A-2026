@@ -15,3 +15,23 @@ String? isAdmin(BuildContext context, GoRouterState state) {
 
   return rtHome;
 }
+
+String? isManager(BuildContext context, GoRouterState state) {
+  final session = context.read<SessionNotifier>();
+
+  if (session.user?.roles.contains(RoleUser.admin) == true) {
+    return null;
+  }
+
+  return rtHome;
+}
+
+String? isAuthenticated(BuildContext context, GoRouterState state) {
+  final session = context.read<SessionNotifier>();
+
+  if (session.isAuthenticated) {
+    return null;
+  }
+
+  return rtLogin;
+}

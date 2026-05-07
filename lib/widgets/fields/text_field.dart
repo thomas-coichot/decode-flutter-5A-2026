@@ -45,6 +45,7 @@ class CustomTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
         ),
       ),
+      textInputAction: TextInputAction.done,
       validator: (String? value) {
         if (required) {
           if (value == null || value.isEmpty) {

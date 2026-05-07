@@ -59,15 +59,7 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: rtHome,
-      redirect: (context, state) {
-        final session = context.read<SessionNotifier>();
-
-        if(session.isAuthenticated){
-          return null;
-        }
-
-        return rtLogin;
-      },
+      redirect: isAuthenticated,
       pageBuilder: (context, state) => buildPage(
         context,
         state,

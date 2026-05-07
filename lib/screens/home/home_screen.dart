@@ -40,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final ThemeNotifier theme = context.watch<ThemeNotifier>();
 
     return Scaffold(
+      key: const ValueKey('home_screen'),
       backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: SingleChildScrollView(
