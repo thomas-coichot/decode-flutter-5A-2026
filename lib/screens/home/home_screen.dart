@@ -1,13 +1,5 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-import '../../api/models/film_model.dart';
-import '../../api/repositories/film_repository.dart';
-import '../../config/routes.dart';
-import '../../helpers/exceptions.dart';
-import '../../notifiers/theme_notifier.dart';
 import '../admin/admin_screen.dart';
 import 'home.dart';
 
@@ -35,7 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final ThemeNotifier theme = context.watch<ThemeNotifier>();
 
     return Scaffold(
       key: const ValueKey('home_screen'),

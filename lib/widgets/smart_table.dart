@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../api/models/paginated_response.dart';
 import '../api/repositories/model_repository.dart';
 import '../helpers/exceptions.dart';
+import '../services/toast_service.dart';
 import 'fields/text_field.dart';
 
 class SmartTable<T> extends StatefulWidget {
@@ -95,6 +96,8 @@ class _SmartTableState<T> extends State<SmartTable<T>> {
       setState(() {
         _isLoading = false;
       });
+
+      ToastService.showToast(e.message);
     }
   }
 
