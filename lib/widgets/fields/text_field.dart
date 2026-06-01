@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../helpers/validators.dart';
@@ -56,13 +55,13 @@ class CustomTextField extends StatelessWidget {
         }
 
         if (email) {
-          String? _email = isEmail(value);
+          String? emailError = isEmail(value);
 
-          if (_email == null) {
+          if (emailError == null) {
             return null;
           }
 
-          return _email;
+          return emailError;
         }
 
         return null;
