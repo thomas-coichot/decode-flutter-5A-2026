@@ -60,16 +60,20 @@ class ApiService {
             body: body,
             headers: headers,
           );
+          break;
         case HttpMethod.put:
           response = await client.put(
             url,
             body: body,
             headers: headers,
           );
+          break;
         case HttpMethod.delete:
           response = await client.delete(url, headers: headers);
+          break;
         default:
           response = await client.get(url, headers: headers);
+          break;
       }
     } on http.ClientException catch (e) {
       throw ApiException(httpStatus: 0, message: 'Erreur réseau: $e');

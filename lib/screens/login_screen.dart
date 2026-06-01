@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () {
                     context.push(rtRegister);
                   },
-                  child: Text('S\'inscrire'),
+                  child: const Text('S\'inscrire'),
                 ),
               ],
             ),
