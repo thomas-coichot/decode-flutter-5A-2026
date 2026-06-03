@@ -17,6 +17,15 @@ enum RoleUser {
         throw Exception('Unknown role: $value');
     }
   }
+
+  String get label {
+    switch (this) {
+      case RoleUser.admin:
+        return 'Administrateur';
+      case RoleUser.user:
+        return 'Utilisateur';
+    }
+  }
 }
 
 class UserModel {

@@ -7,7 +7,9 @@ import '../helpers/middlewares.dart';
 import '../notifiers/session_notifier.dart';
 import '../screens/account/account.dart';
 import '../screens/admin/admin_screen.dart';
-import '../screens/admin/users_screen.dart';
+import '../screens/admin/users/users_add_screen.dart';
+import '../screens/admin/users/users_edit_screen.dart';
+import '../screens/admin/users/users_screen.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/not_found_screen.dart';
@@ -59,12 +61,35 @@ final GoRouter router = GoRouter(
       ),
       routes: [
         GoRoute(
-          path: '/users',
+          path: 'users',
           pageBuilder: (context, state) => buildPage(
             context,
             state,
             const AdminUsersScreen(),
           ),
+          routes: [
+            GoRoute(
+              path: 'new',
+              pageBuilder: (context, state) => buildPage(
+                context,
+                state,
+                const AdminUsersAddScreen(),
+              ),
+            ),
+            GoRoute(
+              path: ':id/edit',
+              pageBuilder: (context, state) {
+                ;
+                return buildPage(
+                  context,
+                  state,
+                  AdminUsersEditScreen(
+                    id: state.pathParameters['id']!,
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ],
     ),
