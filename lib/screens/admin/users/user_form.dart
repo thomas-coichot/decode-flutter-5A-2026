@@ -148,6 +148,7 @@ class _UserFormState extends State<UserForm> {
 
     try {
       final response = await const UserRepository().addOrUpdate(
+        id: widget.id,
         data: {
           'email': _emailController.text,
           'lastname': _lastnameController.text,
