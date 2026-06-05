@@ -163,7 +163,7 @@ class _UserFormState extends State<UserForm> {
       }
 
       ToastService.showToast(
-        'L\'utilsateur a été créé avec succès',
+        'L\'utilsateur a été ${isEdit ? 'modifié' : 'créé'} avec succès',
         type: .success,
       );
 
